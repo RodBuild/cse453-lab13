@@ -28,9 +28,9 @@ public:
     {
         // TODO: Return a citation for your cipher
         std::string s;
-        s += "PrivacyCanada.net (2022), ";
-        s += "\"Privacy Canada - Hill Cipher\', \n   retrieved: ";
-        s += "https://privacycanada.net/hill-cipher/";
+        s += "JournalDev (2022), ";
+        s += "'Vigenere Cipher and its implementation in C++\', \n   retrieved: ";
+        s += "https://www.journaldev.com/43346/vigenere-cipher";
         // return std::string("citation");
         return s;
     }
@@ -73,6 +73,8 @@ public:
     virtual std::string encrypt(const std::string &plainText,
                                 const std::string &password)
     {   
+        // password cannot be bigger than plainText in lenght
+        assert(plainText.size()>= password.size());
         // We match the size of the password with the size of the plainText
         std::string fullKey = password;
         if (password.size() >= plainText.size())
@@ -91,8 +93,11 @@ public:
         std::string cipherText;
         // ' ' -> 32 ASCII -> first value for vigenere's table
         // %95 -> total amount of characters - > 32 - 126 ASCII
-        for (int i = 0; i < plainText.size(); i++)
+        for (int i = 0; i < plainText.size(); i++){
+            std::cout << "( ( ("<< (int)plainText[i] << " - 32) + (" << (int)fullKey[i] << " - 32) ) %95 ) + 32 => ";
             cipherText += (char)( ( (int)plainText[i] - ' ' + (int)fullKey[i] - ' ' ) % 95) + ' ';
+            std::cout << cipherText[i] << std::endl;
+        }
         
         // std::cout << cipherText << std::endl;
         return cipherText;
