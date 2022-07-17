@@ -4,23 +4,18 @@
  *    Implement your cipher here. You can view 'example.h' to see the
  *    completed Caesar Cipher example.
  ********************************************************************/
-#ifndef HILLCIPHER_H
-#define HILLCIPHER_H
+#ifndef VIGENERE_H
+#define VIGENERE_H
 
 /********************************************************************
  * CLASS
  *******************************************************************/
-class HillCipher : public Cipher
+class VigenereCipher : public Cipher
 {
 public:
-    float cipherText[255][1];
-    float plainText[255][1];
-    float** o_matrix;
-    float** r_matrix;
-    ~HillCipher()
+    std::string fullKey = "";
+    ~VigenereCipher()
     {
-        delete o_matrix;
-        delete r_matrix;
     }
     virtual std::string getAuthor() { return "Rodrigo Rodriguez"; } // TODO: return your name
     virtual std::string getCipherName() { return "Hill Cipher"; }   // TODO: return the cipher name
@@ -51,49 +46,22 @@ public:
         // TODO: please format your pseudocode
         // The encrypt pseudocode
         str =  "encrypt(text, key)\n";
-        str += "    keyMatrix_Size = ceil(password / 2)\n";
-        str += "    keyMatrix = createMatrix(key)\n";
-        str += "    textMatrix = text[i][0]\n";
-        str += "    encryptedMatrix[255][255]\n";
-        str += "    for (i < text.length())\n";
-        str += "        for (j < 1)\n";
-        str += "            for (x < keyMatrix_size)\n";
-        str += "                encryptedMatrix[i][j] += keyMatrix[row(0 - keyMatrix_size)][x] * textMatrix[i][j]\n";
-        str += "    for (i < text.length())\n";
-        str += "        cipherText += (char)((fmod(encryptedMatrix[i][0], 94) + 32)\n";
+        str += "    string fullKey\n";
+        str += "    while(text.size() > password.size())\n";
+        str += "        fullKey += fullKey\n";
+        str += "    string cipherText\n";
+        str += "    for (i <text.size())\n";
+        str += "        cipherText += ((text[i] - ' ' + fullKey[i] - ' ') % 95) + ' ' \n";
         str += "    return cipherText\n\n";
         
 
         // The decrypt pseudocode
         // str += "insert the decryption pseudocode\n";
         str += "decrypt(cipher, key)\n";
-        str += "    reversedMatrix = reverseMatrix(keyMatrix);\n";
-        str += "    cipherMatrix = cipher[i][0]\n";
-        str += "    unencryptedMatrix[255][255]\n";
-        str += "    for (i < cipher.length())\n";
-        str += "        for (j < 1)\n";
-        str += "            for(x < keyMatrix_size)\n";
-        str += "                unencryptedMatrix[i][j] += reversedMatrix[row(0 - keyMatrix_size)][x] * cipherMatrix[i][j]\n";
-        str += "            plainText += (char)\n";
-        str += "\n";
-        str += "\n";
-        str += "\n";
-        str += "\n";
-        str += "\n";
-        str += "\n";
-        str += "\n";
-        str += "\n";
-        str += "\n";
-        
-        str += "\n";
-        str += "\n";
-        str += "\n";
-        
-        str += "\n";
-        str += "\n";
-        str += "\n";
-        str += "\n";
-        str += "\n";
+        str += "    string plainText\n";
+        str += "    for (i < cipher.size())\n";
+        str += "        plainText += (((cipherText[i] + ' ' - this->fullKey[i] - ' ') + 95) % 95) + ' '\n";
+        str += "    return plainText\n";
 
         return str;
     }
@@ -104,29 +72,29 @@ public:
      ************************************************************/
     virtual std::string encrypt(const std::string &plainText,
                                 const std::string &password)
-    {
-        //initate matrix
-        this->o_matrix = new float *[plainText.size()];
-        for (int i = 0; i < plainText.length(); i++) {
-            this->o_matrix[i] = new float[plainText.size()];
-        }
-
-        int position = 0;
-        std::string cipherText = "";
-        for (int i = 0; i < password.length(); i++) {
-            for (int j = 0; j < plainText.length(); j++) {
-                this->o_matrix[i][j] = password[position];
-                position++;
-                std::cout << " " << this->o_matrix[i][j] << " ";
+    {   
+        // We match the size of the password with the size of the plainText
+        std::string fullKey = password;
+        if (password.size() >= plainText.size())
+            return fullKey;
+        else {
+            int psize = plainText.size()-password.size();
+            int ksize = password.size();
+            while (psize >= ksize) {
+                fullKey += fullKey;
+                psize -= ksize;
             }
-            std::cout << std::endl;
-            if (position == password.length())
-                break;
+            fullKey += fullKey.substr(0, psize);
         }
+        this->fullKey = fullKey;
+
+        std::string cipherText;
+        // ' ' -> 32 ASCII -> first value for vigenere's table
+        // %95 -> total amount of characters - > 32 - 126 ASCII
+        for (int i = 0; i < plainText.size(); i++)
+            cipherText += (char)( ( (int)plainText[i] - ' ' + (int)fullKey[i] - ' ' ) % 95) + ' ';
         
-
-
-
+        // std::cout << cipherText << std::endl;
         return cipherText;
     }
 
@@ -138,17 +106,12 @@ public:
                                 const std::string &password)
     {
         std::string plainText = "";
+        for (int i = 0; i < cipherText.size(); i++) {
+            plainText += (char) ((((int)cipherText[i] - ' ' - (fullKey[i] - ' ')) + 95) % 95) + ' ';
+        }
+        // std::cout << plainText << std::endl;
         return plainText;
-    }
-
-    void generateMatrix(std::string password)
-    {
-       
-    }
-    void reverseMatrix()
-    {
-       
     }
 };
 
-#endif // HILLCIPHER_H
+#endif // VIGENERE_H
