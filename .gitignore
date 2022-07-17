@@ -35,5 +35,6 @@ test.cpp
 test.exe
 cipher01.h
 cipher01-old.h
+cipher01-old.cpp
 .vscode
 a.exe
