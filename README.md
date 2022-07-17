@@ -6,8 +6,10 @@ example.h : An example of a cipher. Please look at this file if you would like t
 
 cipher.h : Base class that defines what a cipher is
 
-cipher01.h : This is where you should implement your cipher
+vigenereCipher.h : Implementation of Vigenere Cipher in C++
 
+
+https://user-images.githubusercontent.com/59663018/179423122-540b26cd-6d1c-4ce4-8cc8-bd0183bfda69.mp4
 
 
 ## Getting Started
